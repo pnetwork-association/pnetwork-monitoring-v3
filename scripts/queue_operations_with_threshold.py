@@ -22,14 +22,15 @@ def queue_operations_with_threshold():
         try:
             hub_addr = [addr for addr in hub_addr_list if addr['chain'] == chain][0]['addr']
             hub_logs = utils.call_get_logs(hub_addr, chain, endpoint,
-                                           [TOPICS['operation_queued']])
+                                           [TOPICS['operation_queued']],
+                                           nr_of_days=CONST['get_logs_past_days_queue_operations_with_threshold'])
             if hub_logs:
-                for log in hub_logs:
+                for logs in hub_logs:
                     data_res_b = eth_abi.abi.decode(['(bytes32,bytes32,bytes32,uint256,uint256,'
                                                      'uint256,uint256,uint256,uint256,address,'
                                                      'bytes4,bytes4,bytes4,bytes4,string,string,'
                                                      'string,string,bytes,bool)'],
-                                                    eth_utils.decode_hex(log['data'][2:]))
+                                                    eth_utils.decode_hex(logs['data'][2:]))
                     tx_hash = eth_utils.encode_hex(data_res_b[0][1])
                     asset_amount_token = data_res_b[0][5]
                     chain_id_hex = eth_utils.encode_hex(data_res_b[0][11])

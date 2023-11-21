@@ -29,7 +29,8 @@ def components_balances():
                                                           'governanceMessageEmitter',
                                                           abi_addr_unf=impl_addr)
         gov_msg_emitter_logs = utils.call_get_logs(gov_msg_emitter_addr, CONST['dao_chain'], endpoint,
-                                                   [TOPICS['actors_propagated']])
+                                                   [TOPICS['actors_propagated']],
+                                                   nr_of_days=CONST['get_logs_past_days_components_balances'])
         if gov_msg_emitter_logs:
             event = gov_msg_emitter_logs[-1]
             actors_res = eth_abi.abi.decode(['address[]', 'address[]'],

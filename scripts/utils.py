@@ -143,7 +143,7 @@ async def dump_blocks_per_day_on_file():
 
 def get_abi_from_addr(chain, addr):
     """
-    Load the relative abi in `abi/` by the format `abi/<chain>_<addr>_abi.json`.
+    Load the relative abi in `abi/` by the format `abi/<chain>_<addr>.json`.
     If it's missing, throw an error and return empty list
 
     Args:
@@ -267,13 +267,15 @@ def get_latest_block_by_chain(endpoint):
     except Exception as e:
         log.error(f'[!] Error while getting latest block on {endpoint}: {e}')
 
-def get_blocks_range_by_ts(chain, nr_of_days):
+def get_blocks_range_by_ts(chain, nr_of_days, nr_of_hours, nr_of_minutes):
     """
-    Get blocks numbers for a given range (from, to) of days in the past
+    Get blocks numbers for a given range (from, to) of days/hours/minutes in the past
 
     Args:
         chain (str): chain name
         nr_of_days (int): number of days in the past
+        nr_of_hours (int): number of hours in the past
+        nr_of_minutes (int): number of minutes in the past
 
     Returns:
         _from (int): start block (past)
@@ -282,8 +284,12 @@ def get_blocks_range_by_ts(chain, nr_of_days):
     try:
         with open('blocks_per_day.json') as f_blocks_per_day:
             blocks_per_day_dict = json.load(f_blocks_per_day)
-        breakpoint()
-        nr_of_blocks_in_the_past = blocks_per_day_dict[chain] * nr_of_days
+        if nr_of_days:
+            nr_of_blocks_in_the_past = blocks_per_day_dict[chain] * nr_of_days
+        elif nr_of_hours:
+            nr_of_blocks_in_the_past = (blocks_per_day_dict[chain] / 24) * nr_of_hours
+        elif nr_of_minutes:
+            nr_of_blocks_in_the_past = (blocks_per_day_dict[chain] / 3600) * nr_of_minutes
         to = get_latest_block_by_chain(RPC_ENDPOINTS[chain])
         _from = to - nr_of_blocks_in_the_past
         return int(_from), int(to)
@@ -313,7 +319,9 @@ def get_block_ts_by_number_sync(block, chain):
     except Exception as e:
         log.error(f'[!] Error while getting block timestamp for {block}: {e}')
 
-def call_get_logs(addr, chain, url, topic):
+def call_get_logs(addr, chain, url, topic,
+                  nr_of_days=None, nr_of_hours=None,
+                  nr_of_minutes=None):
     """
     Call `eth_getLogs` method and search for a given topic0 and return the results
 
@@ -322,20 +330,24 @@ def call_get_logs(addr, chain, url, topic):
         chain (str): chain name
         url (str): endpoint url
         topic (str): event's topic to search for
+        nr_of_days (int): (opt) how many days in the past
+        nr_of_hours (int): (opt) how many hours in the past
+        nr_of_minutes (int): (opt) how many minutes in the past
 
     Returns:
         logs (list): list of dict containing the results of the call, [] if none found
     """
     try:
         logs = []
-        _from, to = get_blocks_range_by_ts(chain, CONST['get_logs_past_days'])
+        _from, to = get_blocks_range_by_ts(chain, nr_of_days,
+                                           nr_of_hours, nr_of_minutes)
         _to = _from
         nr_of_calls = 1
-        if to - _from > CONST['quicknode_max_block_range_getlogs']:
-            nr_of_calls = int((to - _from) / CONST['quicknode_max_block_range_getlogs'])
+        if to - _from > CONST['jsonrpc_max_block_range_getlogs']:
+            nr_of_calls = int((to - _from) / CONST['jsonrpc_max_block_range_getlogs'])
         for _ in range(nr_of_calls + 1):
-            if (to - _to) > CONST['quicknode_max_block_range_getlogs']:
-                _to += CONST['quicknode_max_block_range_getlogs']
+            if (to - _to) > CONST['jsonrpc_max_block_range_getlogs']:
+                _to += CONST['jsonrpc_max_block_range_getlogs']
             else:
                 _to = to
             payload = json.dumps({
@@ -353,7 +365,7 @@ def call_get_logs(addr, chain, url, topic):
             if 'result' in res and len(res['result']) > 0:
                 for tx in res['result']:
                     logs.append(tx)
-            _from += CONST['quicknode_max_block_range_getlogs']
+            _from += CONST['jsonrpc_max_block_range_getlogs']
             time.sleep(1)
         if logs:
             return logs

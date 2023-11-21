@@ -4,7 +4,7 @@ import time
 
 from . import utils
 from config import RPC_ENDPOINTS
-from constants import TOPICS
+from constants import CONST, TOPICS
 
 
 log = logging.getLogger()
@@ -19,16 +19,17 @@ def operation_cancelled():
         try:
             hub_addr = [addr for addr in hub_addr_list if addr['chain'] == chain][0]['addr']
             hub_logs = utils.call_get_logs(hub_addr, chain, endpoint,
-                                           [TOPICS['operation_cancelled']])
+                                           [TOPICS['operation_cancelled']],
+                                           nr_of_days=CONST['get_logs_past_days_operation_cancelled'])
             if hub_logs:
-                for log in hub_logs:
-                    block_ts = utils.get_block_ts_by_number_sync(log['blockNumber'], chain)
+                for logs in hub_logs:
+                    block_ts = utils.get_block_ts_by_number_sync(logs['blockNumber'], chain)
                     log.info(json.dumps({
                         'title': 'operation_cancelled',
                         'timestamp': int(time.time()),
                         'chain': chain,
-                        'tx_hash': log['transactionHash'],
-                        'block': int(log['blockNumber'], 16),
+                        'tx_hash': logs['transactionHash'],
+                        'block': int(logs['blockNumber'], 16),
                         'block_ts': block_ts
                     }, indent=4))
         except Exception as e:
