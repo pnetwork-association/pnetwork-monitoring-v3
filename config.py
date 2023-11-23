@@ -4,6 +4,7 @@ RPC_ENDPOINTS = {
     'polygon': 'https://polygon-rpc.com/'
 }
 
+# PUBSUB_CONFIG
 SUBPUB_CONFIG = {
     'ipfs_port': 5001,
     'ipfs_url': '',

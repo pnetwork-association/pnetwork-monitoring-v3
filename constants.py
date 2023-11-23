@@ -4,6 +4,7 @@ CHAIN_DECIMALS = {
     'polygon': 18,
 }
 
+# Rename to NETWORK_IDS
 CHAIN_ID = {
     '0x5aca268b': 'bsc',
     '0xb9286154': 'goerli',
@@ -25,6 +26,7 @@ COMPONENTS_MAPS = {
 CONST = {
     'abi_path': 'abi/{}_{}.json',
     'coingecko_prices_url': 'https://api.coingecko.com/api/v3/simple/price',
+    # Rename to interim_chain
     'dao_chain': 'polygon',
     'get_logs_past_days_components_balances': 2,
     'get_logs_past_days_operation_cancelled': 2,
@@ -35,6 +37,7 @@ CONST = {
     'implementation_slot': '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc',
     'ipfs_pubsub_url': 'http://{}:{}/api/v0/pubsub/sub?arg={}',
     'jsonrpc_max_block_range_getlogs': 9999,
+    # I would move this one in the config.py
     'queued_operation_amount_threshold': 1,
 }
 
@@ -44,6 +47,7 @@ FACTORY_ADDRS_DICT = {
     'polygon': '0x4650787da4A497496e514EcCFd6F888B7804ebBe'
 }
 
+# Shall we move it to config.py ?
 RELAYERS = []  # A list of relayers can be added here
 
 TOPICS = {

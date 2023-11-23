@@ -10,4 +10,5 @@ COPY scripts/ /pnetwork-monitoring/scripts
 COPY abi/ /pnetwork-monitoring/abi
 COPY checks_mapping.py config.py constants.py \
   main.py Pipfile Pipfile.lock /pnetwork-monitoring/
+# Define user
 ENTRYPOINT [ "pipenv", "run", "python", "main.py" ]
