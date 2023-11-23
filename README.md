@@ -120,6 +120,8 @@ All the results are `json` formatted.
 1. challenge_period_duration
 2. challenge_status
 3. components_balances
+
+# Rm double 4.
 4. 4.inactive_actors_by_epoch
 5. max_ops_in_queue
 6. nr_of_ops_in_queue
@@ -138,32 +140,32 @@ All the results are `json` formatted.
 Simple run via `docker` for a single check:
 
 ```bash
-$ docker run pnetwork-monitoring -c 5                                                                                                                      
+$ docker run pnetwork-monitoring -c 5
 
-{                                                                                                                                                                                             
-    "title": "max_ops_in_queue",                                                                                                                                                              
-    "timestamp": 1698686055,                                                                                                                                                                  
-    "chain": "bsc",                                                                                                                                                                           
-    "max_ops_in_queue": 10                                                                                                                                                                    
-}                                                                                                                                                                                             
-{                                                                                                                                                                                             
-    "title": "max_ops_in_queue",                                                                                                                                                              
-    "timestamp": 1698686056,                                                                                                                                                                  
-    "chain": "goerli",                                                                                                                                                                        
-    "max_ops_in_queue": 10                                                                                                                                                                    
-}                                                                                                                                                                                             
-{                                                                                                                                                                                             
-    "title": "max_ops_in_queue",                                                                                                                                                              
-    "timestamp": 1698686057,                                                                                                                                                                  
-    "chain": "polygon",                                                                                                                                                                       
-    "max_ops_in_queue": 10                                                                                                                                                                    
-}                              
+{
+    "title": "max_ops_in_queue",
+    "timestamp": 1698686055,
+    "chain": "bsc",
+    "max_ops_in_queue": 10
+}
+{
+    "title": "max_ops_in_queue",
+    "timestamp": 1698686056,
+    "chain": "goerli",
+    "max_ops_in_queue": 10
+}
+{
+    "title": "max_ops_in_queue",
+    "timestamp": 1698686057,
+    "chain": "polygon",
+    "max_ops_in_queue": 10
+}
 ```
 
 Simple run via `pipenv` with multiple checks and `verbose`:
 
 ```bash
-$ pipenv run python main.py -v -c 1 5 
+$ pipenv run python main.py -v -c 1 5
 
 [+] Check `challenge_period_duration` (1):
 
@@ -218,7 +220,7 @@ Run via `pipenv` for a single check, this time redirecting only `stdout` on `tes
 
 ```bash
 $ pipenv run python main.py -c 1 2>&1 > test_log
-$ cat test_log 
+$ cat test_log
 {
     "title": "challenge_period_duration",
     "timestamp": 1698687084,

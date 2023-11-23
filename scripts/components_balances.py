@@ -13,6 +13,7 @@ log = logging.getLogger()
 
 def components_balances():
     """
+    # NOTE: there's just one GovernanceMessageEmitter
     Get all the GovernanceMessageEmitter addresses (factory -> slasher -> reg_manager -> gov_msg_emitter)
     from the latest event (ActorsPropagated) on the DAO chain and then get the relative balances
     on each supported chain.
